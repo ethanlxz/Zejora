@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Zejora academic task dashboard">
+  <title>Dashboard | Zejora</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Reenie+Beanie&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="dashboard-page">
+  <div class="noise" aria-hidden="true"></div>
+  <div id="toast-region" class="toast-region" aria-live="polite"></div>
+
+  <div class="dashboard-shell">
+    <aside class="dashboard-sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <a class="brand" href="/"><span class="brand-mark">z</span><span>Zejora</span></a>
+        <button class="icon-button mobile-close" id="close-sidebar" aria-label="Close navigation">×</button>
+      </div>
+
+      <nav class="dashboard-nav" aria-label="Dashboard navigation">
+        <button class="nav-item active" data-view="all"><span class="nav-icon">⌂</span> My day <span class="nav-count" id="all-count">0</span></button>
+        <button class="nav-item" data-scroll="overdue"><span class="nav-icon">!</span> Overdue <span class="nav-count" id="overdue-count">0</span></button>
+        <button class="nav-item" data-scroll="analytics"><span class="nav-icon">↗</span> Insights</button>
+      </nav>
+
+      <div class="subjects-heading">
+        <span>Subjects</span>
+        <button class="icon-button" id="add-subject-button" aria-label="Add subject">+</button>
+      </div>
+      <div class="subject-list" id="subject-list"></div>
+      <div class="sidebar-empty" id="subject-empty">
+        <p>No subjects yet.</p>
+        <button class="text-button" data-action="add-subject">Add your first</button>
+      </div>
+
+      <div class="sidebar-note">
+        <span class="script-small">a gentle reminder</span>
+        <p>Progress grows from showing up, not doing everything at once.</p>
+      </div>
+      <a class="back-home" href="/">← Back to landing page</a>
+    </aside>
+    <div class="sidebar-scrim" id="sidebar-scrim"></div>
+
+    <main class="dashboard-main">
+      <header class="dashboard-header">
+        <button class="icon-button mobile-menu" id="open-sidebar" aria-label="Open navigation">☰</button>
+        <div class="dashboard-date"><span id="date-label">Today</span><small id="focus-label">All subjects</small></div>
+        <div class="header-actions">
+          <button class="button button-soft" id="header-add-subject">+ Subject</button>
+          <button class="button button-primary button-compact" id="add-task-button">+ Add task</button>
+        </div>
+      </header>
+
+      <section class="dashboard-hero">
+        <div>
+          <span class="script-small" id="greeting-script">make today count</span>
+          <h1 id="dashboard-title">Good morning.</h1>
+          <p id="dashboard-subtitle">Here is what deserves your attention today.</p>
+        </div>
+        <div class="completion-ring" id="completion-ring" style="--progress:0">
+          <div><strong id="completion-value">0%</strong><span>complete</span></div>
+        </div>
+      </section>
+
+      <section class="stats-grid" aria-label="Task summary">
+        <article class="stat-card"><span class="stat-icon coral-bg">◷</span><div><strong id="stat-today">0</strong><span>Due today</span></div></article>
+        <article class="stat-card"><span class="stat-icon lavender-bg">↗</span><div><strong id="stat-upcoming">0</strong><span>Next 7 days</span></div></article>
+        <article class="stat-card"><span class="stat-icon red-bg">!</span><div><strong id="stat-overdue">0</strong><span>Overdue</span></div></article>
+        <article class="stat-card"><span class="stat-icon sage-bg">✓</span><div><strong id="stat-completed">0</strong><span>Completed</span></div></article>
+      </section>
+
+      <section class="empty-dashboard" id="empty-dashboard" hidden>
+        <div class="empty-illustration"><span>✦</span></div>
+        <span class="script-small">a fresh page</span>
+        <h2>Your semester starts here.</h2>
+        <p>Create a subject, then add the assignments and study tasks you want Zejora to keep in view.</p>
+        <button class="button button-primary" data-action="add-subject">Create a subject</button>
+      </section>
+
+      <div id="task-sections">
+        <section class="task-section" id="today-section">
+          <div class="task-section-heading"><div><span class="section-dot coral-bg"></span><h2>Today</h2><span class="group-count" id="today-count">0</span></div><button class="text-button" data-action="add-task">Add task +</button></div>
+          <div class="task-list" id="today-list"></div>
+          <div class="group-empty" id="today-empty">Nothing due today. A little breathing room.</div>
+        </section>
+
+        <section class="task-section" id="overdue-section">
+          <div class="task-section-heading"><div><span class="section-dot red-bg"></span><h2>Overdue</h2><span class="group-count" id="overdue-group-count">0</span></div></div>
+          <div class="task-list" id="overdue-list"></div>
+          <div class="group-empty" id="overdue-empty">No overdue work. Nicely handled.</div>
+        </section>
+
+        <section class="task-section" id="upcoming-section">
+          <div class="task-section-heading"><div><span class="section-dot lavender-bg"></span><h2>Upcoming</h2><span class="group-count" id="upcoming-count">0</span></div></div>
+          <div class="task-list" id="upcoming-list"></div>
+          <div class="group-empty" id="upcoming-empty">Your next seven days are clear.</div>
+        </section>
+
+        <section class="task-section" id="later-section">
+          <div class="task-section-heading"><div><span class="section-dot sage-bg"></span><h2>Later</h2><span class="group-count" id="later-count">0</span></div></div>
+          <div class="task-list" id="later-list"></div>
+          <div class="group-empty" id="later-empty">No longer-range tasks yet.</div>
+        </section>
+
+        <section class="task-section" id="completed-section">
+          <div class="task-section-heading"><div><span class="section-dot sage-bg"></span><h2>Completed</h2><span class="group-count" id="completed-count">0</span></div></div>
+          <div class="task-list" id="completed-list"></div>
+          <div class="group-empty" id="completed-empty">Completed tasks will collect here.</div>
+        </section>
+      </div>
+
+      <section class="analytics-section" id="analytics-section">
+        <div class="section-heading dashboard-section-heading">
+          <div><p class="section-kicker">Your study rhythm</p><h2>Insights without judgment.</h2></div>
+          <p>A live look at where your workload sits and how your momentum is building.</p>
+        </div>
+        <div class="analytics-grid">
+          <article class="chart-card chart-wide"><div class="chart-card-title"><div><span>Completion trend</span><strong>Last 8 weeks</strong></div><span class="trend-pill" id="trend-total">0 finished</span></div><div class="chart-wrap"><canvas id="trend-chart"></canvas></div></article>
+          <article class="chart-card"><div class="chart-card-title"><div><span>Task status</span><strong>At a glance</strong></div></div><div class="chart-wrap doughnut-wrap"><canvas id="status-chart"></canvas><div class="chart-center"><strong id="chart-completion">0%</strong><span>done</span></div></div></article>
+          <article class="chart-card chart-wide"><div class="chart-card-title"><div><span>Workload</span><strong>Tasks by subject</strong></div></div><div class="chart-wrap"><canvas id="subject-chart"></canvas></div></article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="modal" id="subject-modal">
+    <form method="dialog" class="modal-card" id="subject-form">
+      <button class="modal-close" type="button" data-close-dialog aria-label="Close">×</button>
+      <span class="script-small">shape your study space</span>
+      <h2 id="subject-modal-title">Add a subject</h2>
+      <p class="modal-intro">Create a home for related assignments and study tasks.</p>
+      <input type="hidden" id="subject-id">
+      <label>Subject name<input id="subject-name" name="name" maxlength="80" placeholder="e.g. Data structures" required></label>
+      <label>Subject color</label>
+      <div class="color-options" id="color-options">
+        <label><input type="radio" name="color" value="#FFB7B2" checked><span style="--swatch:#FFB7B2"></span></label>
+        <label><input type="radio" name="color" value="#B8D8BA"><span style="--swatch:#B8D8BA"></span></label>
+        <label><input type="radio" name="color" value="#C9C3E6"><span style="--swatch:#C9C3E6"></span></label>
+        <label><input type="radio" name="color" value="#F4D58D"><span style="--swatch:#F4D58D"></span></label>
+        <label><input type="radio" name="color" value="#9EC5E6"><span style="--swatch:#9EC5E6"></span></label>
+      </div>
+      <p class="form-error" id="subject-error"></p>
+      <div class="modal-actions"><button class="text-button modal-delete" id="delete-subject-button" type="button" hidden>Delete subject</button><button class="button button-soft" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit" value="default">Save subject</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="task-modal">
+    <form method="dialog" class="modal-card task-modal-card" id="task-form">
+      <button class="modal-close" type="button" data-close-dialog aria-label="Close">×</button>
+      <span class="script-small">put it somewhere trusted</span>
+      <h2 id="task-modal-title">Add a task</h2>
+      <input type="hidden" id="task-id">
+      <label>Task title<input id="task-title" maxlength="140" placeholder="What needs to get done?" required></label>
+      <label>Description <span>(optional)</span><textarea id="task-description" maxlength="2000" rows="3" placeholder="Add notes, requirements, or a useful link"></textarea></label>
+      <div class="form-row">
+        <label>Subject<select id="task-subject" required></select></label>
+        <label>Due date and time<input id="task-due" type="datetime-local" required></label>
+      </div>
+      <fieldset><legend>Priority</legend><div class="priority-options">
+        <label><input type="radio" name="priority" value="low"><span>Low</span></label>
+        <label><input type="radio" name="priority" value="medium" checked><span>Medium</span></label>
+        <label><input type="radio" name="priority" value="high"><span>High</span></label>
+      </div></fieldset>
+      <p class="form-error" id="task-error"></p>
+      <div class="modal-actions"><button class="button button-soft" type="button" data-close-dialog>Cancel</button><button class="button button-primary" type="submit" value="default">Save task</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="confirm-modal">
+    <div class="modal-card confirm-card">
+      <span class="confirm-icon" id="confirm-icon">!</span>
+      <h2 id="confirm-title">Are you sure?</h2>
+      <p id="confirm-message"></p>
+      <div class="modal-actions"><button class="button button-soft" id="confirm-cancel">Cancel</button><button class="button button-danger" id="confirm-accept">Delete</button></div>
+    </div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
